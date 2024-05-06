@@ -1,0 +1,25 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* background-color: #ffffff; */
+    color: white;
+    padding: 10px 4%;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+
+}
+
+
+.logo , .profile{   
+    width: 80px;
+    height: 80px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    padding: 10px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    transition: 0.3s;
+}
