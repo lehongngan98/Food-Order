@@ -5,7 +5,7 @@ import { StoreContext } from '../../context/StoreContext'
 import axios from 'axios'
 
 const Login = ({ setShowLogin }) => {
-    const { url ,token,setToken } = useContext(StoreContext);
+    const { url ,token,setToken ,setEmail} = useContext(StoreContext);
     const [currState, setCurrState] = useState("Đăng ký")
     const [data, setData] = useState({
         name: "",
@@ -30,9 +30,10 @@ const Login = ({ setShowLogin }) => {
         }
         const response = await axios.post(newUrl,data);
         if(response.data.success){
-            setToken(response.data.token);
+            setToken(response.data.token);            
             localStorage.setItem("token",response.data.token);
             setShowLogin(false);
+            setEmail(data.email);
         }
 
     }

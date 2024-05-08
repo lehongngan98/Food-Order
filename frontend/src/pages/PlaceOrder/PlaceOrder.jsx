@@ -1,22 +1,75 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './PlaceOrder.css'
 import { StoreContext } from '../../context/StoreContext'
+import axios from 'axios';
 const PlaceOrder = () => {
-  const {getTotalCartAmount} = useContext(StoreContext);
+  const {getTotalCartAmount,token,food_list,url,cartItems,setCartItems , email} = useContext(StoreContext);
+
+  const [data,setData] = useState({
+    hoTen:"",
+    soDienThoai:"",
+    gmail:"",
+    diaChi:"",
+    ghiChu:""
+  })
+
+  const onChangeHandler = (e) => {
+    const name= e.target.name;
+    const value = e.target.value;
+    setData({...data,[name]:value})
+  }
 
   function formatVND(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
 
+  const PlaceOrder = async (e) =>{
+    e.preventDefault();
+    let orderItems = [];
+    food_list.map((item)=>{
+      if(cartItems[item._id]>0){
+        let itemInfo = item;
+        itemInfo["quantity"] = cartItems[item._id];
+        orderItems.push(itemInfo);
+      }
+        
+    })
+    const orderData = { 
+      userId:email,    
+      items:orderItems,
+      amount:getTotalCartAmount()+25000,
+      address:data
+    }
+    
+
+    let res = await axios.post(url+"/payment",orderData);
+    console.log("res:",res);
+    if(res.status===200){
+      // removefromcart
+      setCartItems({});
+
+      const session_url = res.data.order_url;      
+      window.location.replace(session_url);
+
+      
+
+    }else{
+      
+      alert("error")
+    }
+  }
+
+
+
   return (
-    <form  className="place-order">
+    <form onSubmit={PlaceOrder} className="place-order">
       <div className="place-order-left">
         <p className='title'>Nhập thông tin giao hàng</p>
-        <input type="text" placeholder='Họ tên' />
-        <input type="text" placeholder='Số điện thoại' />
-        <input type="email" placeholder='Gmail' />
-        <input type="text" placeholder='Địa chỉ' />
-        <input type="text" placeholder='Ghi chú' />
+        <input required name='hoTen' value={data.hoTen} onChange={onChangeHandler} type="text" placeholder='Họ tên' />
+        <input required name='soDienThoai' value={data.soDienThoai} onChange={onChangeHandler} type="text" placeholder='Số điện thoại' />
+        <input required name='gmail' value={data.gmail} onChange={onChangeHandler} type="email" placeholder='Gmail' />
+        <input required name='diaChi' value={data.diaChi} onChange={onChangeHandler} type="text" placeholder='Địa chỉ' />
+        <input required name='ghiChu' value={data.ghiChu} onChange={onChangeHandler} type="text" placeholder='Ghi chú' />
       </div>
       <div className="place-order-right">
         <div className="cart-total">
@@ -37,7 +90,7 @@ const PlaceOrder = () => {
               <p>{formatVND(getTotalCartAmount()===0?0:getTotalCartAmount()+25000)}</p>
             </div>
           </div>
-          <button >Thanh Toán</button>
+          <button type='submit'>Thanh Toán</button>
         </div>
       </div>
     </form>
