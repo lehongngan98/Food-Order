@@ -189,6 +189,7 @@ const CheckOrderStatus = async (req, res) => {
 
 const userOrders = async(req,res) =>{
   try {
+    
     const orders = await orderModel.find({app_user:req.body.userId});
     console.log("user orders:",orders);
     return res.status(200).json({success:true,data:orders});
@@ -198,11 +199,37 @@ const userOrders = async(req,res) =>{
   }
 }
 
+
+//listening orders for admin panel
+const ListOrders = async (req,res) =>{
+  try {
+    const orders = await orderModel.find({});
+    return res.status(200).json({success:true,data:orders})
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({success:false,message:"Error"});
+  }
+}
+
+// update status order for admin panel
+const updateStatus = async (req,res) =>{
+  try {
+    const { app_trans_id,status } = req.body;
+    await orderModel.findOneAndUpdate({ app_trans_id: app_trans_id }, { status: status });
+    return res.status(200).json({success:true,message:"Status updated"})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({success:false,message:"Error"});
+  }
+}
+
 export {
     Payment,
     Callback,
     Verify,
     CheckOrderStatus,
-    userOrders
+    userOrders,
+    ListOrders,
+    updateStatus
 }
 
