@@ -8,6 +8,8 @@ import { Routes, Route } from 'react-router-dom'
 import Footer from './components/Footer/Footer'
 import { useState } from 'react'
 import Login from './components/Login/Login'
+import Verify from './pages/Verify/Verify'
+import MyOrder from './pages/MyOrder/MyOrder'
 
 
 
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
+          <Route path="/verify" element={<Verify />} />
+          <Route path="/myorder" element={<MyOrder />} />
         </Routes>
       </div>
       <Footer />

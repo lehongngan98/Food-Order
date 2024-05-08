@@ -8,7 +8,8 @@ const orderSchema = new mongooes.Schema({
     items:{type:Array,required:true},
     amount:{type:Number,required:true},
     address:{type:Object,required:true},
-    description:{type:String,required:true},    
+    description:{type:String,required:true},
+    status: {type:String,default:"Đang chuẩn bị"},   
     payment:{type:Boolean,default:false},
 })
 

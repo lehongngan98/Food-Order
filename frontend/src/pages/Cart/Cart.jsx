@@ -1,14 +1,35 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import './Cart.css'
 import { StoreContext } from '../../context/StoreContext'
 import { assets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart ,getTotalCartAmount,url} = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart ,getTotalCartAmount,url,token} = useContext(StoreContext);
   const navigate = useNavigate();
 
   function formatVND(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  }
+
+  useEffect(() => {
+    // Kiểm tra nếu giỏ hàng trống thì quay về trang chủ
+    if (Object.keys(cartItems).length === 0 && cartItems.constructor === Object) {
+      alert("Bạn chưa chọn món!");
+      navigate("/");
+    }
+  }, [cartItems, navigate]);
+
+  const ProcessOrder =()=>{
+    if(!token){
+      alert("Bạn chưa đăng nhập!");
+      navigate("/")
+    }else if(getTotalCartAmount() == 0){
+      alert("Bạn chưa chọn món!");
+      navigate("/")
+    }else{
+      navigate("/order")
+    }
+   
   }
 
   return (
@@ -66,7 +87,7 @@ const Cart = () => {
               <p>{formatVND(getTotalCartAmount()===0?0:getTotalCartAmount()+25000)}</p>
             </div>
           </div>
-          <button onClick={()=>navigate("/order")}>Tiến hành thanh toán</button>
+          <button onClick={ProcessOrder}>Tiến hành thanh toán</button>
         </div>
         <div className="cart-promocode">
           <div>

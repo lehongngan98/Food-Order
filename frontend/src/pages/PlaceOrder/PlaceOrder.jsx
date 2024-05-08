@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import './PlaceOrder.css'
 import { StoreContext } from '../../context/StoreContext'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const PlaceOrder = () => {
   const {getTotalCartAmount,token,food_list,url,cartItems,setCartItems , email} = useContext(StoreContext);
-
+  const navigate = useNavigate();
   const [data,setData] = useState({
     hoTen:"",
     soDienThoai:"",
@@ -41,8 +42,15 @@ const PlaceOrder = () => {
       address:data
     }
     
+    if(!token){
+      alert("Bạn chưa đăng nhập!");
+      
+    }else if(getTotalCartAmount == 0){
+      alert("Bạn chưa chọn món!");
+      navigate("/cart")
+    }
 
-    let res = await axios.post(url+"/payment",orderData);
+    let res = await axios.post(url+"/api/order/payment",orderData,{headers:{token}});
     console.log("res:",res);
     if(res.status===200){
       // removefromcart
