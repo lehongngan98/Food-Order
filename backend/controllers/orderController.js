@@ -125,11 +125,15 @@ const Callback =async (req,res) =>{
 
 
 const Verify = async (req, res) => {
-    const { app_trans_id, status } = req.body;
+    const { app_trans_id, status ,userId} = req.body;
+    console.log("email order :",userId);
     console.log("verify payment: ", app_trans_id, status);
     try {
       if (status == 1) {
-        await orderModel.findOneAndUpdate({ app_trans_id: app_trans_id }, { payment: true });
+       const response = await orderModel.findOneAndUpdate({ app_trans_id: app_trans_id }, { payment: true });
+       
+        // await clearCart(req.body.email); // clear the cart after successful payment
+
         return res.json({ success: true, message: "Paid" });
       } else {
         await orderModel.findOneAndDelete({ app_trans_id: app_trans_id });

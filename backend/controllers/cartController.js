@@ -1,3 +1,4 @@
+import userModel from "../models/userModel.js";
 import userModal from "../models/userModel.js";
 
 // add item to user cart
@@ -68,4 +69,18 @@ const getCart = async (req, res) => {
     }
 };
 
-export { addToCart, removeToCart, getCart };
+// xoá cart sau khi payment thành công
+const clearCart = async (req,res) => {
+  const { email } = req.body;
+  let userData = await userModel.find({email:email});
+  if (userData) {
+      userData.cartData = {}; // or however you want to clear the cart
+      await userData.save();
+      return res.json({ success: true, message: "Cart cleared!" });
+  }
+  return res.json({ success: false, message: "User not found!" });
+  
+
+};
+
+export { addToCart, removeToCart, getCart ,clearCart};

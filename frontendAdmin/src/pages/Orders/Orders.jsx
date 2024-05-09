@@ -11,29 +11,49 @@ const Orders = ({ url }) => {
   function formatVND(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
+
+
   const fetchAllOrders = async () => {
+  try {
     const response = await axios.post(url + "/api/order/list");
     if (response.data.success) {
       const ordersWithData = response.data.data.map(order => ({
         ...order,
-        items: JSON.parse(order.items[0]) // Assuming there's only one item per order
+        items: order.items.length ? JSON.parse(order.items[0]) : [] // Add a check for empty or undefined items
       }));
       setOrders(ordersWithData);
+    } else {
+      toast.error("Lỗi");
     }
-    else {
-      toast.error("Lỗi")
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    toast.error("Lỗi khi tải danh sách đơn hàng.");
+  }
+}
+
+  
+
+  const statusHandler = async (event,app_trans_id) =>{
+    const response = await axios.post(url+"/api/order/update-status",{
+      app_trans_id:app_trans_id,
+      status: event.target.value
+    })
+    if(response.data.success){
+      await fetchAllOrders();
+    }else{
+      alert("cập nhật thất bại!");
     }
   }
 
   useEffect(() => {
     fetchAllOrders();
-
+    console.log("order :",orders);
   }, [orders])
 
 
   return (
     <div className="order-add">
-      <h2>Order Page</h2>
+      <h2>Danh sách đơn hàng:</h2>
       <div className="order-list">
         {
           orders.map((order, index) => (
@@ -59,10 +79,11 @@ const Orders = ({ url }) => {
               <p className="order-item-phone">{order.address.soDienThoai}</p>
               <p>Số lượng:{order.items.length}</p>
               <p>{formatVND(order.amount)}</p>
-              <select>
+              <select onChange={(event) =>statusHandler(event,order.app_trans_id)} value={order.status}>
                 <option value="Đang chuẩn bị">Đang chuẩn bị</option>
                 <option value="Xuất kho">Xuất kho</option>
                 <option value="Đang trên đường giao hàng">Đang trên đường giao hàng</option>
+                <option value="Đã giao hàng">Đã giao hàng</option>
               </select>
             </div>
           ))

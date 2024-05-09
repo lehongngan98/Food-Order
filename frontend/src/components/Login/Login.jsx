@@ -13,6 +13,8 @@ const Login = ({ setShowLogin }) => {
         password: ""
     })
 
+
+
     const onChangHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -34,6 +36,9 @@ const Login = ({ setShowLogin }) => {
             localStorage.setItem("token",response.data.token);
             setShowLogin(false);
             setEmail(data.email);
+        }
+        else{
+            alert(response.data.message);
         }
 
     }

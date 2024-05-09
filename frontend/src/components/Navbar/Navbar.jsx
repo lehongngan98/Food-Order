@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import axios from 'axios'
 import './Navbar.css'
 import { assets } from '../../assets/assets'
 import { Link, useNavigate } from 'react-router-dom'
@@ -6,10 +7,11 @@ import { PropTypes } from 'prop-types'
 import { StoreContext } from '../../context/StoreContext'
 const Navbar = ({ setShowLogin }) => {
     const [menu, setMenu] = React.useState("home")
-    const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
+    const { getTotalCartAmount, token, setToken ,url,setCartItems} = useContext(StoreContext);
     const navigate = useNavigate();
 
-    const logout = () => {
+    const logout = async () => {      
+        setCartItems({});          
         localStorage.removeItem("token");
         setToken("");
         navigate("/");

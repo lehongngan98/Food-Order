@@ -53,13 +53,8 @@ const PlaceOrder = () => {
     let res = await axios.post(url+"/api/order/payment",orderData,{headers:{token}});
     console.log("res:",res);
     if(res.status===200){
-      // removefromcart
-      setCartItems({});
-
       const session_url = res.data.order_url;      
       window.location.replace(session_url);
-
-      
 
     }else{
       

@@ -26,11 +26,12 @@ const StoreContextProvider = (props) => {
             if (localStorage.getItem("token")) {
                 setToken(localStorage.getItem("token"));
                 await loadCartsData(localStorage.getItem("token"));
+            }else{
+                setCartItems({});
             }
         }
         loadData();
-        console.log("email :",email);
-        console.log("food list:",food_list);
+
     }, [])
 
     const addToCart = async (itemId) => {
